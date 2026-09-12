@@ -1,1 +1,406 @@
-Hello WOrld
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W Sistemas Inteligentes — Segurança, Monitoramento e Software</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#0d1013;
+    --bg-panel:#15181c;
+    --bg-panel-alt:#1b1f24;
+    --text-1:#edede7;
+    --text-2:#9199a0;
+    --text-3:#5a6169;
+    --accent:#4cc3b8;
+    --accent-dim:rgba(76,195,184,0.14);
+    --line:rgba(237,237,231,0.09);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-base);
+    color:var(--text-1);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.01em;
+    font-weight:600;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1220px; margin:0 auto; padding:0 32px;}
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(13,16,19,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 0;
+  }
+  .logo{
+    font-size:20px; font-weight:700; display:flex; align-items:baseline; gap:6px;
+  }
+  .logo span{color:var(--accent);}
+  .nav-links{display:flex; gap:36px; font-size:14px; color:var(--text-2);}
+  .nav-links a:hover{color:var(--text-1);}
+  .nav-phone{font-size:14px; color:var(--text-2);}
+  .nav-phone strong{color:var(--text-1); font-weight:500;}
+  .burger{display:none;}
+
+  /* HERO */
+  .hero{
+    padding:96px 0 110px;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:64px;
+    align-items:center;
+  }
+  .hero-status{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; color:var(--text-2); margin-bottom:28px;
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 0 0 var(--accent-dim);
+    animation:pulse 2.4s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(76,195,184,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(76,195,184,0);}
+    100%{box-shadow:0 0 0 0 rgba(76,195,184,0);}
+  }
+  .hero h1{
+    font-size:clamp(38px, 5vw, 62px);
+    line-height:1.05;
+    max-width:11ch;
+  }
+  .hero p.lede{
+    margin-top:24px;
+    font-size:17px;
+    color:var(--text-2);
+    max-width:46ch;
+  }
+  .hero-cta{
+    margin-top:36px;
+    display:flex; align-items:center; gap:24px;
+  }
+  .btn{
+    background:var(--accent);
+    color:#0d1013;
+    font-weight:500;
+    font-size:14px;
+    padding:14px 26px;
+    border:none;
+    cursor:pointer;
+  }
+  .btn-ghost{
+    font-size:14px; color:var(--text-2); border-bottom:1px solid var(--line);
+    padding-bottom:2px;
+  }
+  .btn-ghost:hover{color:var(--text-1); border-color:var(--text-2);}
+
+  /* Camera grid visual */
+  .feed-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    grid-template-rows:repeat(2, 1fr);
+    gap:2px;
+    aspect-ratio:4/3;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .feed{
+    position:relative;
+    background:
+      repeating-linear-gradient(0deg, rgba(237,237,231,0.03) 0px, rgba(237,237,231,0.03) 1px, transparent 1px, transparent 3px),
+      radial-gradient(circle at 30% 20%, rgba(76,195,184,0.10), transparent 60%),
+      var(--bg-panel);
+    overflow:hidden;
+  }
+  .feed::before{
+    content:attr(data-label);
+    position:absolute; top:6px; left:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px; color:rgba(237,237,231,0.55);
+  }
+  .feed::after{
+    content:attr(data-time);
+    position:absolute; bottom:6px; right:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9px; color:rgba(76,195,184,0.75);
+  }
+  .feed.live{
+    grid-column:2; grid-row:1/3;
+  }
+  .radar{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .radar svg{width:70%; height:70%;}
+  .sweep{
+    transform-origin:50% 50%;
+    animation:spin 3.6s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  /* ABOUT */
+  .about{
+    background:var(--bg-panel);
+    padding:110px 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .about-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:72px;
+  }
+  .about h2{font-size:30px; max-width:16ch; margin-bottom:22px;}
+  .about p{color:var(--text-2); font-size:15.5px; max-width:44ch;}
+  .spec-list{list-style:none; margin-top:8px;}
+  .spec-list li{
+    display:flex; align-items:center; gap:14px;
+    padding:16px 0;
+    border-top:1px solid var(--line);
+    font-size:15px;
+  }
+  .spec-list li:last-child{border-bottom:1px solid var(--line);}
+  .spec-list .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px; color:var(--accent);
+  }
+
+  /* SERVICES */
+  .services{padding:110px 0;}
+  .services h2{font-size:30px; margin-bottom:48px; max-width:18ch;}
+  .service-strip{
+    display:grid;
+    grid-template-columns:1.3fr 0.8fr 0.8fr 1.1fr;
+    gap:2px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .service{
+    background:var(--bg-panel-alt);
+    min-height:340px;
+    padding:26px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    position:relative;
+    overflow:hidden;
+    transition:background 0.25s ease;
+  }
+  .service:hover{background:#20252b;}
+  .service .pattern{
+    position:absolute; inset:0; opacity:0.5;
+  }
+  .service h3{
+    font-size:19px; font-weight:600; position:relative; z-index:1;
+  }
+  .service p{
+    font-size:13.5px; color:var(--text-2); margin-top:10px; position:relative; z-index:1;
+  }
+  .p-cctv{background:repeating-linear-gradient(135deg, rgba(76,195,184,0.08) 0 2px, transparent 2px 14px);}
+  .p-monitor{background:radial-gradient(circle at 50% 30%, rgba(76,195,184,0.16), transparent 65%);}
+  .p-access{background:
+      linear-gradient(rgba(237,237,231,0.05) 1px, transparent 1px) 0 0/100% 22px,
+      linear-gradient(90deg, rgba(237,237,231,0.05) 1px, transparent 1px) 0 0/22px 100%;}
+  .p-software{background:repeating-linear-gradient(0deg, rgba(76,195,184,0.06) 0 1px, transparent 1px 6px);}
+
+  /* STATS */
+  .stats{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:64px 0;
+  }
+  .stats-row{
+    display:grid; grid-template-columns:repeat(4, 1fr);
+    gap:32px;
+  }
+  .stat b{
+    display:block;
+    font-family:'Space Grotesk', sans-serif;
+    font-size:38px; font-weight:600; color:var(--text-1);
+  }
+  .stat span{font-size:13.5px; color:var(--text-2);}
+
+  /* CONTACT / FOOTER */
+  .contact{padding:120px 0 80px; text-align:left;}
+  .contact h2{font-size:clamp(30px, 4vw, 46px); max-width:14ch; margin-bottom:28px;}
+  .contact-row{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:40px; flex-wrap:wrap;
+  }
+  .contact p{color:var(--text-2); max-width:42ch; font-size:15.5px;}
+  .contact-info{display:flex; flex-direction:column; gap:6px; font-size:14.5px; color:var(--text-2); text-align:right;}
+  .contact-info strong{color:var(--text-1); font-weight:500;}
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 0;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:12.5px; color:var(--text-3);
+  }
+  .foot-links{display:flex; gap:22px;}
+  .foot-links a:hover{color:var(--text-2);}
+
+  @media (max-width:860px){
+    .nav-links, .nav-phone{display:none;}
+    .hero{grid-template-columns:1fr; padding:60px 0 70px;}
+    .about-grid{grid-template-columns:1fr; gap:44px;}
+    .service-strip{grid-template-columns:1fr 1fr;}
+    .stats-row{grid-template-columns:1fr 1fr; row-gap:32px;}
+    .contact-row{flex-direction:column; align-items:flex-start;}
+    .contact-info{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <div class="logo">W<span>.</span> Sistemas Inteligentes</div>
+      <div class="nav-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#contato">Contato</a>
+      </div>
+      <div class="nav-phone">Central de atendimento <strong>(19) 0000-0000</strong></div>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap" style="display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;">
+    <div>
+      <div class="hero-status mono"><span class="dot"></span> SISTEMA ATIVO — MONITORAMENTO EM TEMPO REAL</div>
+      <h1>Segurança que não tira os olhos de nada.</h1>
+      <p class="lede">Há mais de 10 anos projetamos, instalamos e operamos sistemas de segurança eletrônica, monitoramento e software sob medida — para empresas que não podem se dar ao luxo de piscar.</p>
+      <div class="hero-cta">
+        <button class="btn">Falar com um especialista</button>
+        <a href="#servicos" class="btn-ghost">Ver serviços</a>
+      </div>
+    </div>
+    <div class="feed-grid">
+      <div class="feed" data-label="CAM 01 · PÁTIO" data-time="04:12:08"></div>
+      <div class="feed live" data-label="CAM 02 · AO VIVO" data-time="REC ●">
+        <div class="radar">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(76,195,184,0.25)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(76,195,184,0.2)" stroke-width="1"/>
+            <circle cx="50" cy="50" r="14" fill="none" stroke="rgba(76,195,184,0.18)" stroke-width="1"/>
+            <g class="sweep">
+              <path d="M50 50 L50 4 A46 46 0 0 1 88 28 Z" fill="rgba(76,195,184,0.18)"/>
+            </g>
+            <circle cx="50" cy="50" r="1.6" fill="#4cc3b8"/>
+          </svg>
+        </div>
+      </div>
+      <div class="feed" data-label="CAM 03 · ACESSO" data-time="04:12:08"></div>
+      <div class="feed" data-label="CAM 04 · GALPÃO" data-time="04:12:07"></div>
+      <div class="feed" data-label="CAM 05 · RECEPÇÃO" data-time="04:12:08"></div>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="sobre">
+  <div class="wrap about-grid">
+    <div>
+      <h2>Transformamos vigilância em tranquilidade.</h2>
+      <p>Trabalhamos lado a lado com cada cliente para entender riscos reais antes de propor qualquer câmera, sensor ou linha de código. Unimos engenharia de segurança e desenvolvimento de software para que a proteção acompanhe o ritmo do negócio — não o contrário. O resultado é operação monitorada, dados organizados e resposta rápida quando algo foge do padrão.</p>
+    </div>
+    <div>
+      <ul class="spec-list">
+        <li><span class="num mono">01</span> CFTV &amp; videomonitoramento</li>
+        <li><span class="num mono">02</span> Central de monitoramento 24 horas</li>
+        <li><span class="num mono">03</span> Controle de acesso</li>
+        <li><span class="num mono">04</span> Desenvolvimento de software sob medida</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="servicos">
+  <div class="wrap">
+    <h2>O que fazemos, todos os dias.</h2>
+    <div class="service-strip">
+      <div class="service">
+        <div class="pattern p-cctv"></div>
+        <h3>CFTV &amp; videomonitoramento</h3>
+        <p>Projeto e instalação de câmeras de alta definição com cobertura pensada para cada ponto cego real.</p>
+      </div>
+      <div class="service">
+        <div class="pattern p-monitor"></div>
+        <h3>Monitoramento 24h</h3>
+        <p>Central própria acompanhando alarmes e imagens em tempo integral, todos os dias do ano.</p>
+      </div>
+      <div class="service">
+        <div class="pattern p-access"></div>
+        <h3>Controle de acesso</h3>
+        <p>Portarias, catracas e fechaduras eletrônicas integradas para saber quem entra e quando.</p>
+      </div>
+      <div class="service">
+        <div class="pattern p-software"></div>
+        <h3>Software sob medida</h3>
+        <p>Sistemas próprios de gestão e integração, feitos para conversar com o que sua operação já usa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" id="diferenciais">
+  <div class="wrap stats-row">
+    <div class="stat"><b>10+</b><span>anos de atuação no mercado</span></div>
+    <div class="stat"><b>24/7</b><span>monitoramento contínuo</span></div>
+    <div class="stat"><b>100%</b><span>projetos sob medida</span></div>
+    <div class="stat"><b>&lt;5min</b><span>tempo médio de resposta</span></div>
+  </div>
+</section>
+
+<section class="contact" id="contato">
+  <div class="wrap">
+    <div class="contact-row">
+      <div>
+        <h2>Vamos proteger o que importa para o seu negócio.</h2>
+        <p>Conte um pouco sobre sua operação e retornamos com um diagnóstico e uma proposta de segurança sob medida.</p>
+        <div class="hero-cta" style="margin-top:32px;">
+          <button class="btn">Solicitar uma proposta</button>
+        </div>
+      </div>
+      <div class="contact-info">
+        <strong>W Sistemas Inteligentes</strong>
+        <span>contato@wsistemas.com.br</span>
+        <span>(19) 0000-0000</span>
+        <span>Campinas — SP</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%;">
+    <span>© 2026 W Sistemas Inteligentes</span>
+    <div class="foot-links">
+      <a href="#sobre">Sobre</a>
+      <a href="#servicos">Serviços</a>
+      <a href="#contato">Contato</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
